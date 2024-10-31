@@ -41,7 +41,7 @@ namespace ECommercePlatform.Server.Services.Identity
 
             if (user is null || !await _userManager.CheckPasswordAsync(user, login.Password))
             {
-                //return new AuthModel { Key = ResponseKeys.InvalidCredentials.ToString() };
+                return authModel;
             }
 
             var jwtSecurityToken = await CreateJwtToken(user);

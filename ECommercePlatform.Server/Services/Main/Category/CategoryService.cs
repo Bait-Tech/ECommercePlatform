@@ -16,7 +16,17 @@ namespace ECommercePlatform.Server.Services.Main.Category
             _context = context;
             _imageHelper = imageHelper;
         }
-
+        public async Task<List<CategoryDTO>> GetAllCategories()
+        {
+            return await _context.Categories
+                .Select(c => new CategoryDTO
+                {
+                    ID = c.ID,
+                    ImageUrl = c.ImageUrl,
+                    Name = c.EnlgishName
+                })
+                .ToListAsync();
+        }
         public async Task<int> InsertAsync(CategoryDTO categoryDto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -24,18 +34,24 @@ namespace ECommercePlatform.Server.Services.Main.Category
             {
                 var category = new Entities.Main.Category
                 {
-                    EnlgishName = categoryDto.Name
+                    EnlgishName = categoryDto.Name,
+                    ArabicName = categoryDto.Name
                 };
+
+
 
                 if (categoryDto.ImageFile != null)
                 {
                     category.ImageUrl = await _imageHelper.AddImage(categoryDto.ImageFile, "categories");
                 }
 
-                _context.Categories.Add(category);
+                await _context.Categories.AddAsync(category);
+
                 await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
+
+
                 return category.ID;
             }
             catch

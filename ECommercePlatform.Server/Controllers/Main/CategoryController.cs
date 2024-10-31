@@ -16,30 +16,41 @@ namespace ECommercePlatform.Server.Controllers.Main
             _categoryService = categoryService;
         }
 
-        [HttpPost]
+
+        [HttpPost("Category")]
         public async Task<IActionResult> CreateCategory([FromForm] CategoryDTO categoryDto)
         {
-          int result = await _categoryService.InsertAsync(categoryDto);
-          
-          if (result > 0)
-          {
-              return Ok(result);
-          }
-          
-          return BadRequest(new { Message = "Failed to create category" });
+            int result = await _categoryService.InsertAsync(categoryDto);
+
+            if (result > 0)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { Message = "Failed to create category" });
         }
 
-        [HttpPut]
+        [HttpPut("Category")]
         public async Task<IActionResult> UpdateCategory([FromForm] CategoryDTO categoryDto)
         {
-           var result = await _categoryService.UpdateAsync(categoryDto);
+            var result = await _categoryService.UpdateAsync(categoryDto);
 
-           if (result)
-           {
-               return Ok();
-           }
-          
-           return BadRequest(new { Message = "Failed to update category" });
+            if (result)
+            {
+                return Ok();
+            }
+
+            return BadRequest(new { Message = "Failed to update category" });
         }
+
+
+        [HttpGet("All")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _categoryService.GetAllCategories();
+
+            return Ok(result);
+        }
+
     }
 }

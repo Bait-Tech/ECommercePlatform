@@ -26,7 +26,7 @@ namespace ECommercePlatform.Server.Services.Base.Crud
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync(); ;
         }
-        public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
         public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
         public async Task UpdateAsync(T entity)
         {

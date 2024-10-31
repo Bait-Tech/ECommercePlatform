@@ -3,23 +3,29 @@
     public class ImageHelperService
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly string _rootPath;
 
         public ImageHelperService(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
+            _rootPath = Directory.GetCurrentDirectory();
+            EnsureDirectoriesExist();
+
         }
-        public async Task<string> AddImage(IFormFile Image, string FolderName)
+        public async Task<string> AddImage(IFormFile image, string folderName)
         {
-            string originalFileName = Path.GetFileNameWithoutExtension(Image.FileName);
-            string fileExtension = Path.GetExtension(Image.FileName);
+            var uploadFolder = EnsureFolderExists(folderName);
+
+            string originalFileName = Path.GetFileNameWithoutExtension(image.FileName);
+            string fileExtension = Path.GetExtension(image.FileName);
             string shortenedFileName = originalFileName[..Math.Min(10, originalFileName.Length)];
             string photoName = $"{Guid.NewGuid():N}{shortenedFileName}{fileExtension}";
-            var photoRoot = Path.Combine(_webHostEnvironment.WebRootPath, "images/" + FolderName + "/", photoName);
+            var photoRoot = Path.Combine(uploadFolder, photoName);
             using (var fileStream = new FileStream(photoRoot, FileMode.Create))
             {
-                Image.CopyTo(fileStream);
+                image.CopyTo(fileStream);
             }
-            return $"/images/{FolderName}/{photoName}";
+            return $"/images/{folderName}/{photoName}";
 
         }
 
@@ -46,6 +52,30 @@
                 File.Delete(existingImagePath);
             }
 
+        }
+
+        private void EnsureDirectoriesExist()
+        {
+            var wwwrootPath = Path.Combine(_rootPath, "wwwroot");
+            if (!Directory.Exists(wwwrootPath))
+            {
+                Directory.CreateDirectory(wwwrootPath);
+            }
+
+            var imagesPath = Path.Combine(wwwrootPath, "images");
+            if (!Directory.Exists(imagesPath))
+            {
+                Directory.CreateDirectory(imagesPath);
+            }
+        }
+        private string EnsureFolderExists(string folderName)
+        {
+            var folderPath = Path.Combine(_rootPath, "wwwroot", "images", folderName);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            return folderPath;
         }
     }
 }

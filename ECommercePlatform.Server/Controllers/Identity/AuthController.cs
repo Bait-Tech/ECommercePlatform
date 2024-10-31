@@ -17,7 +17,7 @@ namespace ECommercePlatform.Server.Controllers.Identity
         }
 
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> SignUp([FromBody] SignUp model)
         {
             if (!ModelState.IsValid)
@@ -35,7 +35,7 @@ namespace ECommercePlatform.Server.Controllers.Identity
             return Ok(result);
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login model)
         {
             if (!ModelState.IsValid)
@@ -58,7 +58,7 @@ namespace ECommercePlatform.Server.Controllers.Identity
             return Ok(result);
         }
 
-        [HttpGet("RefreshToken")]
+        [HttpGet("refreshToken")]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
@@ -74,7 +74,7 @@ namespace ECommercePlatform.Server.Controllers.Identity
 
         }
 
-        [HttpPost("RevokeToken")]
+        [HttpPost("revokeToken")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeToken model)
         {
             var token = model.Token ?? Request.Cookies["refreshToken"];

@@ -1,0 +1,69 @@
+/* admin-aside-menu.component.scss */
+.layout-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 300px;
+    background-color: var(--surface-overlay);
+    border-right: 1px solid var(--surface-border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-menu-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.layout-menu-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0 2rem 0;
+
+    .logo-image {
+        width: 30px;
+        height: 30px;
+    }
+
+    .app-name {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: var(--primary-color);
+    }
+}
+
+:host ::ng-deep {
+    .layout-menu {
+        .p-panelmenu {
+            .p-panelmenu-header-link {
+                padding: 1rem;
+                gap: 0.5rem;
+                
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+
+            .p-menuitem-icon {
+                color: var(--text-color-secondary);
+            }
+
+            .p-menuitem-text {
+                color: var(--text-color);
+            }
+
+            .p-panelmenu-header-link:hover {
+                background: var(--surface-hover);
+            }
+        }
+    }
+}
+
+.layout-menu-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+}

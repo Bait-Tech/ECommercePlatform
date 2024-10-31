@@ -1,0 +1,24 @@
+<div class="layout-wrapper" [ngClass]="containerClass">
+  <!-- <app-topbar></app-topbar> -->
+
+  <app-admin-aside-menu></app-admin-aside-menu>
+
+  <div class="layout-main-container">
+      <div class="layout-main">
+          <!-- <app-breadcrumb></app-breadcrumb> -->
+
+          <div class="content-wrapper">
+              <router-outlet></router-outlet>
+          </div>
+
+          <!-- <app-footer></app-footer> -->
+      </div>
+  </div>
+
+  <!-- <app-config></app-config> -->
+
+  <!-- Mask for mobile menu -->
+  <div class="layout-mask" [ngClass]="{'layout-mask-active': layoutService.state.staticMenuMobileActive}"
+       (click)="layoutService.hideMenu()">
+  </div>
+</div>

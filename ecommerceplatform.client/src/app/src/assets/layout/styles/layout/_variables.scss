@@ -1,0 +1,15 @@
+// src/assets/layout/styles/layout/_variables.scss
+$scale: 14px;                    // initial font size
+$bodyBgColor: #edf1f5;
+$textColor: #495057;
+$textSecondaryColor: #6c757d;
+$borderRadius: 12px;             // border radius of layout element e.g. card, sidebar
+$transitionDuration: .2s;        // transition duration of layout elements
+
+// Main Layout Variables
+$fontSize: $scale;
+$menuWidth: 300px;
+$menuWidthSlim: 100px;
+$topbarHeight: 70px;
+$footerHeight: 60px;
+$submenuBgColor: rgba(255, 255, 255, .05);
