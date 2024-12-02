@@ -16,7 +16,6 @@ namespace ECommercePlatform.Server.Controllers.Main
             _categoryService = categoryService;
         }
 
-
         [HttpPost("Category")]
         public async Task<IActionResult> CreateCategory([FromForm] CategoryDTO categoryDto)
         {
@@ -43,13 +42,20 @@ namespace ECommercePlatform.Server.Controllers.Main
             return BadRequest(new { Message = "Failed to update category" });
         }
 
-
         [HttpGet("All")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _categoryService.GetAllCategories();
 
             return Ok(result);
+        }
+
+        [HttpDelete("List")]
+        public async Task<IActionResult> DeleteList(List<int> ids)
+        {
+            var result = await _categoryService.DeleteListAsync(ids);
+
+            return result ? Ok() : BadRequest();
         }
 
     }

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { AuthService } from '../../../shared/auth.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-admin-aside-menu',
   templateUrl: './admin-aside-menu.component.html',
-  styleUrls: ['./admin-aside-menu.component.scss']
+  styleUrls: ['./admin-aside-menu.component.scss'],
 })
 export class AdminAsideMenuComponent implements OnInit {
   model: MenuItem[] = [];
@@ -18,45 +18,45 @@ export class AdminAsideMenuComponent implements OnInit {
       {
         label: 'Dashboard',
         icon: 'pi pi-fw pi-home',
-        routerLink: ['/admin/dashboard']
+        routerLink: ['/admin/dashboard'],
       },
       {
         label: 'category',
         icon: 'pi pi-fw pi-user',
-        routerLink: ['/admin/categories']
+        routerLink: ['/admin/categories'],
       },
       {
-        label: 'Analysis',
-        icon: 'pi pi-fw pi-chart-line',
-        routerLink: ['/analysis']
+        label: 'Products',
+        icon: 'pi pi-box',
+        routerLink: ['/admin/products'],
       },
       {
         label: 'Accounting',
         icon: 'pi pi-fw pi-dollar',
-        routerLink: ['/accounting']
+        routerLink: ['/admin/sub-categories'],
       },
       {
         label: 'Messages',
         icon: 'pi pi-fw pi-comment',
         routerLink: ['/messages'],
         badge: '1',
-        badgeStyleClass: 'p-badge-danger'
+        badgeStyleClass: 'p-badge-danger',
       },
       {
         label: 'Projects',
         icon: 'pi pi-fw pi-folder',
-        routerLink: ['/projects']
+        routerLink: ['/projects'],
       },
       {
         label: 'Settings',
         icon: 'pi pi-fw pi-cog',
-        routerLink: ['/settings']
+        routerLink: ['/settings'],
       },
       {
         label: 'Info',
         icon: 'pi pi-fw pi-info-circle',
-        routerLink: ['/info']
-      }
+        routerLink: ['/info'],
+      },
     ];
   }
 

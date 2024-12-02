@@ -1,6 +1,7 @@
 ﻿using ECommercePlatform.Server.Data;
 using ECommercePlatform.Server.DTOs.Product;
 using ECommercePlatform.Server.Entities.Main;
+using ECommercePlatform.Server.Extensions.pagination;
 using ECommercePlatform.Server.Helpers.ImageHelper;
 using ECommercePlatform.Server.Services.Base.Crud;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,60 @@ namespace ECommercePlatform.Server.Services.Main.Product
             _imageHelper = imageHelper;
         }
 
+        public async Task<List<ProductDTO>> GetAllProductsAsync()
+        {
+            return await _context
+                .Products
+                .Include(p => p.ProductImages)
+                .Select(p => new ProductDTO
+                {
+                    ID = p.ID,
+                    Price = p.Price,
+                    CategoryID = p.CategoryID.Value,
+                    Description = p.Description,
+                    Code = p.Code,
+                    SubCategoryID = p.SubCategoryID.Value,
+                    StockQuantity = p.StockQuantity,
+                    DiscountPrice = p.Discount1Price,
+                    Name = p.EnglishName,
+                    Images = p.ProductImages.Select(pi => new ProductImageDTO
+                    {
+                        ID = pi.ID,
+                        IsMain = pi.IsMain,
+                        ImageUrl = pi.ImageUrl,
+                    }).ToList()
+                }).ToListAsync();
+        }
+        public async Task<PaginatedResult<ProductDTO>> GetPaginatedResultAsync(PaginationParams paginationParams)
+        {
+            var query = _context.Products
+                       .AsNoTracking()
+                       .Include(p => p.ProductImages)
+                       .Select(p => new ProductDTO
+                       {
+                           ID = p.ID,
+                           Price = p.Price,
+                           CategoryID = p.CategoryID ?? 0,
+                           Description = p.Description ?? "",
+                           Code = p.Code ?? "",
+                           SubCategoryID = p.SubCategoryID ?? 0,
+                           StockQuantity = p.StockQuantity,
+                           DiscountPrice = p.Discount1Price,
+                           Name = p.EnglishName ?? "",
+                           Images = p.ProductImages.Select(pi => new ProductImageDTO
+                           {
+                               ID = pi.ID,
+                               IsMain = pi.IsMain,
+                               ImageUrl = pi.ImageUrl,
+                           }).ToList()
+                       });
+
+           return await query.ToPaginatedListAsync(paginationParams);
+        }
         public async Task<int> InsertAsync(ProductDTO productDto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
                 var product = new Entities.Main.Product
@@ -29,7 +81,7 @@ namespace ECommercePlatform.Server.Services.Main.Product
                     EnglishName = productDto.Name,
                     Description = productDto.Description,
                     Price = productDto.Price,
-                    Discount1Price = productDto.Discount1Price,
+                    Discount1Price = productDto.DiscountPrice,
                     StockQuantity = productDto.StockQuantity,
                     IsActive = true,
                     CategoryID = productDto.CategoryID,
@@ -40,7 +92,7 @@ namespace ECommercePlatform.Server.Services.Main.Product
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
 
-                if (productDto.Images != null && productDto.Images.Any())
+                if (productDto.Images != null && productDto.Images.Count != 0)
                 {
                     for (int i = 0; i < productDto.Images.Count; i++)
                     {
@@ -66,7 +118,7 @@ namespace ECommercePlatform.Server.Services.Main.Product
                 throw;
             }
         }
-        public async Task<int> UpdateAsync(ProductDTO productDto)
+        public async Task<bool> UpdateAsync(ProductDTO productDto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -77,14 +129,15 @@ namespace ECommercePlatform.Server.Services.Main.Product
 
                 if (product == null)
                 {
-                   return 0;
+                    return false;
                 }
 
                 product.Code = productDto.Code;
                 product.EnglishName = productDto.Name;
+                product.ArabicName = productDto.Name;
                 product.Description = productDto.Description;
                 product.Price = productDto.Price;
-                product.Discount1Price = productDto.Discount1Price;
+                product.Discount1Price = productDto.DiscountPrice;
                 product.StockQuantity = productDto.StockQuantity;
                 product.CategoryID = productDto.CategoryID;
                 product.SubCategoryID = productDto.SubCategoryID;
@@ -128,20 +181,21 @@ namespace ECommercePlatform.Server.Services.Main.Product
                         firstImage.IsMain = true;
                     }
                 }
-
+                _context.Update(product);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                return product.ID;
+                return true;
             }
             catch
             {
                 await transaction.RollbackAsync();
-                throw;
+                return false;
             }
         }
-        public async Task<bool> DeleteAsync(int productId)
+        public async Task<bool> DeleteProductAsync(int productId)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
                 var product = await _context.Products
@@ -150,7 +204,7 @@ namespace ECommercePlatform.Server.Services.Main.Product
 
                 if (product == null)
                 {
-                    return false; 
+                    return false;
                 }
 
                 if (product.ProductImages != null)
@@ -175,6 +229,46 @@ namespace ECommercePlatform.Server.Services.Main.Product
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+        public async Task<bool> DeleteListAsync(List<int> productIds)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var products = await _context
+                .Products
+                .Where(c => productIds.Contains(c.ID))
+                .ToListAsync();
+
+                foreach (var product in products)
+                {
+                    if (product.ProductImages != null)
+                    {
+                        foreach (var image in product.ProductImages)
+                        {
+                            if (!string.IsNullOrEmpty(image.ImageUrl))
+                            {
+                                await _imageHelper.DeleteImage(image.ImageUrl);
+                            }
+                        }
+                    }
+                }
+
+                _context.RemoveRange(products);
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
         }
     }
 }

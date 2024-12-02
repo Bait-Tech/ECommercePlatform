@@ -1,8 +1,10 @@
 ﻿using ECommercePlatform.Server.Data;
 using ECommercePlatform.Server.DTOs.Category;
+using ECommercePlatform.Server.Entities.Main;
 using ECommercePlatform.Server.Helpers.ImageHelper;
 using ECommercePlatform.Server.Services.Base.Crud;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ECommercePlatform.Server.Services.Main.Category
 {
@@ -30,6 +32,7 @@ namespace ECommercePlatform.Server.Services.Main.Category
         public async Task<int> InsertAsync(CategoryDTO categoryDto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
                 var category = new Entities.Main.Category
@@ -60,7 +63,6 @@ namespace ECommercePlatform.Server.Services.Main.Category
                 throw;
             }
         }
-
         public async Task<bool> UpdateAsync(CategoryDTO categoryDto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -93,6 +95,25 @@ namespace ECommercePlatform.Server.Services.Main.Category
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+        public async Task<bool> DeleteListAsync(List<int> categoriesIDs)
+        {
+            var categories = await _context
+                .Categories
+                .Where(c => categoriesIDs.Contains(c.ID))
+            .ToListAsync();
+
+            foreach (var category in categories)
+            {
+                if (!string.IsNullOrEmpty(category.ImageUrl))
+                {
+                    await _imageHelper.DeleteImage(category.ImageUrl);
+                }
+            }
+
+            _context.RemoveRange(categories);
+
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

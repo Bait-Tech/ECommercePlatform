@@ -4,13 +4,13 @@
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly string _rootPath;
-
-        public ImageHelperService(IWebHostEnvironment webHostEnvironment)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ImageHelperService(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _webHostEnvironment = webHostEnvironment;
             _rootPath = Directory.GetCurrentDirectory();
             EnsureDirectoriesExist();
-
         }
         public async Task<string> AddImage(IFormFile image, string folderName)
         {
@@ -25,10 +25,10 @@
             {
                 image.CopyTo(fileStream);
             }
-            return $"/images/{folderName}/{photoName}";
+            var baseUrl = GetBaseUrl();
 
+            return $"{baseUrl}/images/{folderName}/{photoName}";
         }
-
         public async Task<string> UpdateImage(IFormFile Image, string FolderName)
         {
             string originalFileName = Path.GetFileNameWithoutExtension(Image.FileName);
@@ -42,18 +42,36 @@
             }
             return $"/images/{FolderName}/{photoName}";
         }
-
-        public async Task DeleteImage(string Image)
+        public async Task DeleteImage(string imageUrl)
         {
-
-            var existingImagePath = Path.Combine(_webHostEnvironment.WebRootPath, Image.TrimStart('/'));
-            if (File.Exists(existingImagePath))
+            try
             {
-                File.Delete(existingImagePath);
+                var baseUrl = GetBaseUrl();
+                string relativePath = imageUrl;
+
+                if (imageUrl.StartsWith(baseUrl))
+                {
+                    relativePath = imageUrl[baseUrl.Length..];
+                }
+
+                relativePath = relativePath.TrimStart('/');
+
+                var existingImagePath = Path.Combine(_webHostEnvironment.WebRootPath, relativePath);
+
+                if (File.Exists(existingImagePath))
+                {
+                    File.Delete(existingImagePath);
+                }
+                else
+                {
+                    throw new FileNotFoundException($"Image not found at path: {existingImagePath}");
+                }
             }
-
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting image: {ex.Message}", ex);
+            }
         }
-
         private void EnsureDirectoriesExist()
         {
             var wwwrootPath = Path.Combine(_rootPath, "wwwroot");
@@ -76,6 +94,11 @@
                 Directory.CreateDirectory(folderPath);
             }
             return folderPath;
+        }
+        private string GetBaseUrl()
+        {
+            var request = _httpContextAccessor.HttpContext?.Request;
+            return $"{request?.Scheme}://{request?.Host.Value}";
         }
     }
 }

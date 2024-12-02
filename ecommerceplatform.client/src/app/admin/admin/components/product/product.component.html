@@ -1,0 +1,183 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+              (click)="openNew()"></button>
+            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+              (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table #dt [value]="products" [rows]="10" [paginator]="true" [totalRecords]="totalRecords" [lazy]="true"
+        (onLazyLoad)="loadProducts($event)" [globalFilterFields]="['name', 'code']" [(selection)]="selectedProducts"
+        [rowHover]="true" dataKey="id" [loading]="loading"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+            <th style="width: 150px">Image</th>
+            <th pSortableColumn="code">Code <p-sortIcon field="code"></p-sortIcon></th>
+            <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+            <th pSortableColumn="stockQuantity">Stock <p-sortIcon field="stockQuantity"></p-sortIcon></th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="product"></p-tableCheckbox>
+            </td>
+            <td>{{product.name}}</td>
+            <td >
+              <div class="image-container">
+                <img [src]="getMainImageUrl(product)" 
+                     [alt]="product.name"
+                     class="product-image"
+                  />
+            </div>
+                      </td>
+            <td>{{product.code}}</td>
+            <td>{{product.price | currency:'USD'}}</td>
+            <td>{{product.stockQuantity}}</td>
+            <td>
+              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                (click)="editProduct(product)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <form [formGroup]="productForm">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" pInputText id="name" formControlName="name" autofocus
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('name')}" />
+            <small class="ng-dirty ng-invalid" *ngIf="isFieldInvalid('name')">
+              {{getFieldError('name')}}
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="code">Code</label>
+            <input type="text" pInputText id="code" formControlName="code"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('code')}" />
+            <small class="ng-dirty ng-invalid" *ngIf="isFieldInvalid('code')">
+              {{getFieldError('code')}}
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea pInputTextarea id="description" formControlName="description" rows="3"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('description')}">
+            </textarea>
+            <small class="ng-dirty ng-invalid" *ngIf="isFieldInvalid('description')">
+              {{getFieldError('description')}}
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="category">Category</label>
+            <p-dropdown [options]="categories" formControlName="categoryID" optionLabel="name" optionValue="id"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('categoryID')}">
+            </p-dropdown>
+            <small class="ng-dirty ng-invalid" *ngIf="isFieldInvalid('categoryID')">
+              {{getFieldError('categoryID')}}
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="price">Price</label>
+            <p-inputNumber id="price" formControlName="price" mode="currency" currency="USD" locale="en-US"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('price')}">
+            </p-inputNumber>
+            <small class="ng-dirty ng-invalid" *ngIf="isFieldInvalid('price')">
+              {{getFieldError('price')}}
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="discountPrice">Discount Price</label>
+            <p-inputNumber id="discountPrice" formControlName="discountPrice" mode="currency" currency="USD"
+              locale="en-US">
+            </p-inputNumber>
+          </div>
+
+          <div class="field">
+            <label for="stock">Stock</label>
+            <p-inputNumber id="stock" formControlName="stockQuantity"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('stockQuantity')}">
+            </p-inputNumber>
+            <small class="ng-dirty ng-invalid" *ngIf="isFieldInvalid('stockQuantity')">
+              {{getFieldError('stockQuantity')}}
+            </small>
+          </div>
+
+          <div class="field">
+            <label>Product Images</label>
+            <p-fileUpload #fileUpload [multiple]="true" mode="basic" chooseLabel="Choose Images" accept="image/*"
+              [maxFileSize]="1000000" [showUploadButton]="false" [showCancelButton]="false"
+              (onSelect)="onFileSelect($event)">
+            </p-fileUpload>
+
+            <div class="uploaded-images mt-2" formArrayName="images">
+              <div *ngFor="let imageControl of imagesFormArray.controls; let i = index" [formGroupName]="i"
+                class="flex align-items-center justify-content-between p-2 border-bottom-1 surface-border"
+                [ngStyle]="{'display': imageControl.get('isDeleted')?.value ? 'none' : 'flex'}">
+
+                <div class="flex align-items-center">
+                  <img [src]="imageControl.get('imageUrl')?.value" [alt]="productForm.get('name')?.value"
+                    style="width: 50px; height: 50px; object-fit: cover;" class="mr-3" />
+                  <span>Image {{i + 1}}</span>
+                </div>
+
+                <div class="flex align-items-center gap-2">
+                  <button pButton pRipple type="button"
+                    [icon]="imageControl.get('isMain')?.value ? 'pi pi-star-fill' : 'pi pi-star'"
+                    [class.p-button-warning]="imageControl.get('isMain')?.value"
+                    [class.p-button-secondary]="!imageControl.get('isMain')?.value" class="p-button-sm"
+                    (click)="setMainImage(i)">
+                  </button>
+
+                  <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-danger p-button-sm"
+                    (click)="removeImage(i)">
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="deleteProductsDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to delete the selected products?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteProductsDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+          (click)="confirmDeleteSelected()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>

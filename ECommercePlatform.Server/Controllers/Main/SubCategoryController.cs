@@ -15,13 +15,19 @@ namespace ECommercePlatform.Server.Controllers.Main
             _subCategoryService = subCategoryService;
         }
 
-
         [HttpGet("SubCategories")]
-        public async Task<IActionResult> GetSubCategories([FromQuery] int categoryID)
+        public async Task<IActionResult> GetByCategoryId([FromQuery] int categoryID)
         {
             var result = await _subCategoryService.GetByCategoryId(categoryID);
             return Ok(result);
         }
 
+        [HttpDelete("List")]
+        public async Task<IActionResult> DeleteList(List<int> ids)
+        {
+            var result = await _subCategoryService.DeleteListAsync(ids);
+
+            return result ? Ok() : BadRequest();
+        }
     }
 }

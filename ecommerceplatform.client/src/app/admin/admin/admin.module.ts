@@ -9,6 +9,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AdminAsideMenuComponent } from './components/admin-aside-menu/admin-aside-menu.component';
 import { AdminLayoutComponent } from './components/admin-layout/admin-layout.component';
 import { CategoryComponent } from './components/category/category.component';
+import { ProductComponent } from './components/product/product.component'; // Added ProductComponent
 
 // Guard
 import { AuthGuard } from '../guards/auth.guard';
@@ -16,6 +17,8 @@ import { AuthGuard } from '../guards/auth.guard';
 // PrimeNG Modules
 import { RippleModule } from 'primeng/ripple';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber'; // Added for product prices
+import { InputTextareaModule } from 'primeng/inputtextarea'; // Added for product description
 import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
@@ -34,11 +37,10 @@ import { MessagesModule } from 'primeng/messages';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { FileUploadModule } from 'primeng/fileupload';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-// PrimeNG Services
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
+import { SubCategoryComponent } from './components/sub-category/sub-category.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -49,7 +51,9 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'categories', component: CategoryComponent }
+      { path: 'categories', component: CategoryComponent },
+      { path: 'products', component: ProductComponent },
+      { path: 'sub-categories', component: SubCategoryComponent }
     ],
   },
 ];
@@ -58,16 +62,20 @@ const routes: Routes = [
   declarations: [
     LoginComponent,
     AdminAsideMenuComponent,
-    DashboardComponent,
     AdminLayoutComponent,
-    CategoryComponent  
+    CategoryComponent,
+    ProductComponent ,
+    SubCategoryComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
+    
     InputTextModule,
+    InputNumberModule,    
+    InputTextareaModule, 
     PasswordModule,
     CheckboxModule,
     RippleModule,
@@ -75,7 +83,6 @@ const routes: Routes = [
     CardModule,
     TableModule,
     ToolbarModule,
-    PanelMenuModule,
     MenuModule,
     ToastModule,
     ConfirmDialogModule,
@@ -90,8 +97,8 @@ const routes: Routes = [
     FileUploadModule
   ],
   providers: [
-    MessageService,  
-    ConfirmationService  
+    MessageService,
+    ConfirmationService
   ]
 })
 export class AdminModule { }

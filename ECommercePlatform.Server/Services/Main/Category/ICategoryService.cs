@@ -8,5 +8,6 @@ namespace ECommercePlatform.Server.Services.Main.Category
         Task<int> InsertAsync(CategoryDTO categoryDto);
         Task<bool> UpdateAsync(CategoryDTO categoryDto);
         Task<List<CategoryDTO>> GetAllCategories();
+        Task<bool> DeleteListAsync(List<int> categoriesIDs);
     }
 }

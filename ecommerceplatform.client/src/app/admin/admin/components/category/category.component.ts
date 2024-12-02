@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
 import { Category } from '../../interfaces/category.interface';
 import { CategoryService } from '../../services/categroy.service';
 
@@ -70,48 +69,32 @@ export class CategoryComponent implements OnInit {
 
   confirmDeleteSelected() {
     this.deleteCategoriesDialog = false;
-    Promise.all(
-      this.selectedCategories.map((category) =>
-        this.categoryService.deleteCategory(category.id).toPromise()
-      )
-    ).then(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Successful',
-        detail: 'Categories deleted',
-        life: 3000,
-      });
-      this.selectedCategories = [];
-      this.loadCategories();
-    });
-  }
 
-  confirmDelete() {
-    this.deleteCategoryDialog = false;
-
-    if (this.category.id) {
-      this.categoryService.deleteCategory(this.category.id).subscribe({
+    this.categoryService
+      .deleteCategories(this.selectedCategories.map((c) => c.id))
+      .subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Successful',
-            detail: 'Category deleted',
+            detail: 'Categories deleted',
             life: 3000,
           });
+          this.selectedCategories = [];
           this.loadCategories();
         },
         error: (error) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to delete category',
+            detail: 'Failed to delete categories',
             life: 3000,
           });
+          console.error('Error deleting categories:', error);
         },
       });
-    }
   }
-
+  
   hideDialog() {
     this.categoryDialog = false;
     this.submitted = false;
@@ -125,11 +108,10 @@ export class CategoryComponent implements OnInit {
 
   saveCategory() {
     this.submitted = true;
-
     if (this.category.name?.trim()) {
       if (this.category.id) {
         this.categoryService
-          .updateCategory(this.category.id, this.category)
+          .updateCategory(this.category)
           .subscribe({
             next: () => {
               this.messageService.add({

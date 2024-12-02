@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ECommercePlatform.Server.Extensions.pagination;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommercePlatform.Server.Services.Base.Crud
 {
@@ -11,10 +12,19 @@ namespace ECommercePlatform.Server.Services.Base.Crud
             _context = context;
             _dbSet = _context.Set<T>();
         }
-        public async Task AddAsync(T entity)
+        public virtual async Task<int> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
+
             await _context.SaveChangesAsync();
+
+            var idProperty = typeof(T).GetProperty("ID") ?? throw new InvalidOperationException("Property 'ID' does not exist on the entity.");
+
+            var idValue = idProperty.GetValue(entity);
+
+            return idValue == null
+                ? throw new InvalidOperationException("ID value is null. Ensure the entity is saved and ID is generated.")
+                : (int)idValue;
         }
         public async Task DeleteAsync(int id)
         {
@@ -28,7 +38,13 @@ namespace ECommercePlatform.Server.Services.Base.Crud
         }
         public virtual async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
         public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
-        public async Task UpdateAsync(T entity)
+        public virtual async Task<PaginatedResult<T>> GetAllPagedAsync(PaginationParams paginationParams)
+        {
+            var query = _dbSet.AsNoTracking();
+
+            return await query.ToPaginatedListAsync(paginationParams);
+        }
+        public virtual async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();

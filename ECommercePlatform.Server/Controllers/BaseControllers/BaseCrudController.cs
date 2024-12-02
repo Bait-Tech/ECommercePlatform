@@ -1,5 +1,5 @@
-﻿using ECommercePlatform.Server.Services.Base.Crud;
-using Microsoft.AspNetCore.Http;
+﻿using ECommercePlatform.Server.Extensions.pagination;
+using ECommercePlatform.Server.Services.Base.Crud;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommercePlatform.Server.Controllers.BaseControllers
@@ -20,6 +20,14 @@ namespace ECommercePlatform.Server.Controllers.BaseControllers
         {
             var entities = await _service.GetAllAsync();
             return Ok(entities);
+        }
+
+        [HttpGet("Paged")]
+        public async Task<IActionResult> GetAllPagedAsync([FromQuery] PaginationParams paginationParams)
+        {
+            var result = await _service.GetAllPagedAsync(paginationParams);
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -49,7 +57,7 @@ namespace ECommercePlatform.Server.Controllers.BaseControllers
         [HttpPut("{id}")]
         public virtual async Task<ActionResult> Update(int id, T entity)
         {
-            if (id != (int)entity.GetType().GetProperty("Id").GetValue(entity))
+            if (id != (int)entity.GetType().GetProperty("ID").GetValue(entity))
             {
                 return BadRequest();
             }

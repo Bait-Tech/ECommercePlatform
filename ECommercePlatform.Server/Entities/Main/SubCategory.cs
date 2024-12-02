@@ -5,7 +5,7 @@ namespace ECommercePlatform.Server.Entities.Main
 {
     public class SubCategory : CrudBase
     {
-        public required string ArabicName { get; set; }
+        public string? ArabicName { get; set; }
         public string? EnlgishName { get; set; }
         public int? CategoryID { get; set; }
         public string? ImageUrl { get; set; }
@@ -13,5 +13,8 @@ namespace ECommercePlatform.Server.Entities.Main
 
         [ForeignKey("CategoryID")]
         public Category? Category { get; set; }
+
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
     }
 }
