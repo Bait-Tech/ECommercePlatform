@@ -1,0 +1,97 @@
+<div class="p-fluid">
+  <form [formGroup]="form">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-12">
+          <div class="field">
+            <label for="title">Title</label>
+            <input formControlName="title" type="text" pInputText id="title" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="field">
+            <label for="badgeText">Badge Text</label>
+            <input formControlName="badgeText" type="text" pInputText id="badgeText" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="field">
+            <label for="badgeColor">Badge Color</label>
+            <color-chrome  [color]="form.get('badgeColor')?.value" formControlName="badgeColor"></color-chrome>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="field">
+            <label for="categoryList">Category List</label>
+            <p-dropdown [placeholder]="'Select A Category'" formControlName="categoryID"
+              (onChange)="onCategoryChange($event)" id="categoryList" [options]="categoryList" optionLabel="name"
+              optionValue="id"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-6" *ngIf="displayCategoryDDl">
+          <div class="field">
+            <label id="subCategoryList" for="badgeColor">Sub Category List</label>
+            <p-dropdown id="subCategoryList" formControlName="subCategoryID" [placeholder]="'Select A Sub Category'"
+              [options]="subCategoryList" optionLabel="englishName" optionValue="id"
+              (onChange)="onSubCategoryChange($event)"></p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4" *ngIf="productsList && productsList.length > 0">
+        <div class="col-12">
+          <h5>Products</h5>
+          <p>Select products to include in this section:</p>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="productsList && productsList.length > 0">
+        <div class="col-6 col-sm-6 mb-3" *ngFor="let product of productsList">
+          <div class="card" [ngClass]="{'border-primary': product.isSelected}">
+            <div class="card-img-top text-center py-2" *ngIf="product.mainImageUrl">
+              <img [src]="product.mainImageUrl" class="img-fluid" style="max-height: 150px;" alt="{{ product.name }}">
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <p-checkbox [binary]="true" [(ngModel)]="product.isSelected" [ngModelOptions]="{standalone: true}">
+                </p-checkbox>
+                <div class="ms-3">
+                  <h6 class="mb-0">{{ product.name }}</h6>
+                  <small class="text-muted">
+                    {{ product.price | currency }}
+                    <span *ngIf="product.discountPrice" class="text-danger ms-2">
+                      <del>{{ product.discountPrice | currency }}</del>
+                    </span>
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3" *ngIf="productsList && productsList.length === 0">
+        <div class="col-12">
+          <div class="alert alert-info">
+            No products available for the selected category/subcategory.
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="flex justify-content-end mt-4">
+      <button pButton label="Cancel" icon="pi pi-times" (click)="cancel()" class="p-button-text mr-2"></button>
+      <button pButton label="Save" icon="pi pi-check" (click)="saveSection()" [disabled]="!form.valid"></button>
+    </div>
+  </form>
+</div>

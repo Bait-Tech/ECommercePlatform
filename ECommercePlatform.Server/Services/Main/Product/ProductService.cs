@@ -43,6 +43,37 @@ namespace ECommercePlatform.Server.Services.Main.Product
                     }).ToList()
                 }).ToListAsync();
         }
+        public async Task<ProductDTO> GetByID(int id)
+        {
+            var product = await _context.Products
+                 .Where(p => p.ID == id)
+                 .Include(p => p.ProductImages)
+                 .Select(p => new ProductDTO
+                 {
+                     ID = p.ID,
+                     Price = p.Price,
+                     CategoryID = p.CategoryID.Value,
+                     Description = p.Description,
+                     Code = p.Code,
+                     SubCategoryID = p.SubCategoryID.Value,
+                     StockQuantity = p.StockQuantity,
+                     DiscountPrice = p.Discount1Price,
+                     Name = p.EnglishName,
+                     Images = p.ProductImages.Select(pi => new ProductImageDTO
+                     {
+                         ID = pi.ID,
+                         IsMain = pi.IsMain,
+                         ImageUrl = pi.ImageUrl,
+                     }).ToList()
+                 }).FirstOrDefaultAsync();
+
+            if (product is null)
+            {
+                return new ProductDTO();
+            }
+
+            return product;
+        }
         public async Task<PaginatedResult<ProductDTO>> GetPaginatedResultAsync(PaginationParams paginationParams)
         {
             var query = _context.Products
@@ -67,7 +98,96 @@ namespace ECommercePlatform.Server.Services.Main.Product
                            }).ToList()
                        });
 
-           return await query.ToPaginatedListAsync(paginationParams);
+            return await query.ToPaginatedListAsync(paginationParams);
+        }
+        public async Task<List<ProductDTO>> GetProductsByCategory(int categoryID, int? subCategoryID)
+        {
+            if (subCategoryID is not null)
+            {
+                return await _context.Products
+                      .Where(p => p.CategoryID == categoryID && p.SubCategoryID == subCategoryID)
+                      .AsNoTracking()
+                      .Include(p => p.ProductImages)
+                      .Select(p => new ProductDTO
+                      {
+                          ID = p.ID,
+                          Price = p.Price,
+                          CategoryID = p.CategoryID.Value,
+                          Description = p.Description ?? "",
+                          Code = p.Code,
+                          SubCategoryID = p.SubCategoryID.Value,
+                          StockQuantity = p.StockQuantity,
+                          DiscountPrice = p.Discount1Price,
+                          Name = p.EnglishName ?? "Empty",
+                          Images = p.ProductImages.Select(pi => new ProductImageDTO
+                          {
+                              ID = pi.ID,
+                              IsMain = pi.IsMain,
+                              ImageUrl = pi.ImageUrl,
+                          }).ToList()
+                      })
+                      .ToListAsync();
+            }
+
+            return await _context.Products
+                             .Where(p => p.CategoryID == categoryID)
+                             .AsNoTracking()
+                             .Include(p => p.ProductImages)
+                             .Select(p => new ProductDTO
+                             {
+                                 ID = p.ID,
+                                 Price = p.Price,
+                                 CategoryID = p.CategoryID.Value,
+                                 Description = p.Description ?? "",
+                                 Code = p.Code,
+                                 SubCategoryID = p.SubCategoryID.Value,
+                                 StockQuantity = p.StockQuantity,
+                                 DiscountPrice = p.Discount1Price,
+                                 Name = p.EnglishName ?? "Empty",
+                                 Images = p.ProductImages.Select(pi => new ProductImageDTO
+                                 {
+                                     ID = pi.ID,
+                                     IsMain = pi.IsMain,
+                                     ImageUrl = pi.ImageUrl,
+                                 }).ToList()
+                             })
+                             .ToListAsync();
+        }
+        public async Task<PaginatedResult<ProductDTO>> FilterProducts(FilterProductsDTO filterProductsDTO)
+        {
+            var query = _context.Products.AsQueryable();
+
+            if (filterProductsDTO?.CategoryID != null && filterProductsDTO.CategoryID != 0)
+                query = query.Where(p => p.CategoryID == filterProductsDTO.CategoryID);
+
+            if (filterProductsDTO?.SubCategoryID != null && filterProductsDTO?.SubCategoryID !=0)
+                query = query.Where(p => p.SubCategoryID == filterProductsDTO.SubCategoryID);
+
+            if (!string.IsNullOrWhiteSpace(filterProductsDTO?.Name))
+                query = query.Where(p => p.EnglishName!.Contains(filterProductsDTO.Name));
+
+            var projectedQuery = query
+                .Include(p => p.ProductImages)
+                .Select(p => new ProductDTO
+                {
+                    ID = p.ID,
+                    Price = p.Price,
+                    CategoryID = p.CategoryID ?? 0,
+                    Description = p.Description ?? "",
+                    Code = p.Code ?? "",
+                    SubCategoryID = p.SubCategoryID ?? 0,
+                    StockQuantity = p.StockQuantity,
+                    DiscountPrice = p.Discount1Price,
+                    Name = p.EnglishName ?? "",
+                    Images = p.ProductImages.Select(pi => new ProductImageDTO
+                    {
+                        ID = pi.ID,
+                        IsMain = pi.IsMain,
+                        ImageUrl = pi.ImageUrl ?? "",
+                    }).ToList()
+                });
+
+            return await projectedQuery.ToPaginatedListAsync(filterProductsDTO.PaginationParams);
         }
         public async Task<int> InsertAsync(ProductDTO productDto)
         {

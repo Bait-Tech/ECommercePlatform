@@ -95,6 +95,11 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets/styles"
+              ]
+            },
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -102,7 +107,7 @@
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets/styles"
             ],
             "styles": [
               "src/styles.scss",

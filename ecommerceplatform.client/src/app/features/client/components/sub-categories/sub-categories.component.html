@@ -1,0 +1,42 @@
+<div class="container-fluid bg-white shadow-sm mb-4">
+  <div class="container py-4">
+    <h1 class="display-5 fw-bold">Sub Categories</h1>
+  </div>
+</div>
+
+<div class="container mb-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="input-group">
+        <span class="input-group-text bg-white">
+          <i class="bi bi-search"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Search categories..." [(ngModel)]="searchTerm">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row g-4">
+    <div class="col-2 col-sm-6 col-lg-4" *ngFor="let category of filteredCategories" style="cursor: pointer;"
+      (click)="goToProducts(category.id)">
+      <div class="card h-100 shadow-sm hover-shadow">
+        <img
+          [src]="category.imageUrl || 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&q=80&w=500'"
+          [alt]="category.englishName" class="card-img-top" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <h3 class="card-title h5 mb-0">{{ category.englishName }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" *ngIf="filteredCategories?.length === 0">
+  <div class="row">
+    <div class="col-12 text-center py-5">
+      <h3 class="text-muted">No sub-categories found</h3>
+    </div>
+  </div>
+</div>

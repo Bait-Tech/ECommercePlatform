@@ -114,7 +114,7 @@ namespace ECommercePlatform.Server.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EnlgishName")
+                    b.Property<string>("EnglishName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
@@ -235,7 +235,7 @@ namespace ECommercePlatform.Server.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EnlgishName")
+                    b.Property<string>("EnglishName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")

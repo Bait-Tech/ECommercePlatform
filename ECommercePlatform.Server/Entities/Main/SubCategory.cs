@@ -1,4 +1,5 @@
 ﻿using ECommercePlatform.Server.Entities.Base;
+using ECommercePlatform.Server.Entities.HomeSections;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommercePlatform.Server.Entities.Main
@@ -6,7 +7,7 @@ namespace ECommercePlatform.Server.Entities.Main
     public class SubCategory : CrudBase
     {
         public string? ArabicName { get; set; }
-        public string? EnlgishName { get; set; }
+        public string? EnglishName { get; set; }
         public int? CategoryID { get; set; }
         public string? ImageUrl { get; set; }
 
@@ -16,5 +17,7 @@ namespace ECommercePlatform.Server.Entities.Main
 
         [NotMapped]
         public IFormFile? ImageFile { get; set; }
+
+        public ICollection<ProductSection>? ProductSections { get; set; } = [];
     }
 }

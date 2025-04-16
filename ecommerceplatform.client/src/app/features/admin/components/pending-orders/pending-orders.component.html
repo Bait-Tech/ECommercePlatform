@@ -1,0 +1,92 @@
+<p-toast></p-toast>
+
+<div class="card">
+  <p-toolbar styleClass="mb-4">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="Confirm" icon="pi pi-check" class="p-button-success mr-2" (click)="confirmSelectedOrders()" [disabled]="!selectedOrders.length"></button>
+      <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedOrders()" [disabled]="!selectedOrders.length"></button>
+    </ng-template>
+    <ng-template pTemplate="right">
+      <div class="flex align-items-center gap-2">
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" [(ngModel)]="filters.userName" (input)="onFilter()" placeholder="Search by name" />
+        </span>
+        <span class="p-input-icon-left">
+          <i class="pi pi-phone"></i>
+          <input pInputText type="text" [(ngModel)]="filters.PhoneNumber" (input)="onFilter()" placeholder="Search by phone" />
+        </span>
+      </div>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table 
+    #dt 
+    [value]="orders" 
+    [rows]="10" 
+    [paginator]="true" 
+    [totalRecords]="totalRecords"
+    [lazy]="true"
+    (onLazyLoad)="loadOrders($event)"
+    [(selection)]="selectedOrders"
+    [rowHover]="true" 
+    dataKey="orderID"
+    [loading]="loading"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+    [showCurrentPageReport]="true">
+    
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="orderID">Order ID <p-sortIcon field="orderID"></p-sortIcon></th>
+        <th pSortableColumn="userName">Customer Name <p-sortIcon field="userName"></p-sortIcon></th>
+        <th pSortableColumn="location">Location <p-sortIcon field="location"></p-sortIcon></th>
+        <th pSortableColumn="phoneNumber">Phone <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+        <th pSortableColumn="createDate">Order Date <p-sortIcon field="createDate"></p-sortIcon></th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-order>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="order"></p-tableCheckbox>
+        </td>
+        <td>{{order.orderID}}</td>
+        <td>{{order.userName}}</td>
+        <td>{{order.location}}</td>
+        <td>{{order.phoneNumber}}</td>
+        <td>{{order.createDate | date:'medium'}}</td>
+        <td>
+          <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
+            (click)="showProducts(order)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog header="Order Products" [(visible)]="displayProductsDialog" [modal]="true" [style]="{width: '50vw'}">
+  <p-table [value]="selectedOrderProducts" [scrollable]="true" scrollHeight="400px">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Image</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{product.productName}}</td>
+        <td>{{product.productQTY}}</td>
+        <td>{{product.productPrice | currency}}</td>
+        <td>
+          <img [src]="product.productImage" [alt]="product.productName" width="50" class="shadow-2" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>

@@ -1,6 +1,4 @@
 ﻿using ECommercePlatform.Server.Data;
-using ECommercePlatform.Server.DTOs.Category;
-using ECommercePlatform.Server.Entities.Main;
 using ECommercePlatform.Server.Extensions.pagination;
 using ECommercePlatform.Server.Helpers.ImageHelper;
 using ECommercePlatform.Server.Services.Base.Crud;
@@ -44,7 +42,7 @@ namespace ECommercePlatform.Server.Services.Main.SubCategory
             {
                 var insertedSubCategory = new Entities.Main.SubCategory
                 {
-                    EnlgishName = entity.EnlgishName,
+                    EnglishName = entity.EnglishName,
                     ArabicName = entity.ArabicName,
                     CategoryID = entity.CategoryID,
                 };
@@ -83,7 +81,7 @@ namespace ECommercePlatform.Server.Services.Main.SubCategory
                     return;
                 }
 
-                existSubCategory.EnlgishName = entity.EnlgishName;
+                existSubCategory.EnglishName = entity.EnglishName;
 
                 if (entity.ImageFile != null)
                 {

@@ -22,6 +22,180 @@ namespace ECommercePlatform.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.GalleryImage", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LinkUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("GalleryImages");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.HeroImage", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("HeroSectionID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LinkUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("HeroSectionID");
+
+                    b.ToTable("HeroImages");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.HeroSection", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("HeroSections");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.ImageGallerySection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LinkUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ImageGallerySections");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.ProductSection", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("BadgeColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BadgeText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("SubCategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.HasIndex("SubCategoryID");
+
+                    b.ToTable("ProductSections");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.SectionProducts", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SectionID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProductID");
+
+                    b.HasIndex("SectionID");
+
+                    b.ToTable("SectionProducts");
+                });
+
             modelBuilder.Entity("ECommercePlatform.Server.Entities.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -110,7 +284,8 @@ namespace ECommercePlatform.Server.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EnlgishName")
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
@@ -230,7 +405,7 @@ namespace ECommercePlatform.Server.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EnlgishName")
+                    b.Property<string>("EnglishName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
@@ -247,6 +422,72 @@ namespace ECommercePlatform.Server.Migrations
                     b.HasIndex("CategoryID");
 
                     b.ToTable("SubCategories");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.Orders.Order", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime?>("ConfirmDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.Orders.ProductsOrders", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QTY")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("OrderID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("ProductsOrders");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -382,6 +623,51 @@ namespace ECommercePlatform.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.HeroImage", b =>
+                {
+                    b.HasOne("ECommercePlatform.Server.Entities.HomeSections.HeroSection", "HeroSection")
+                        .WithMany("Images")
+                        .HasForeignKey("HeroSectionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HeroSection");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.ProductSection", b =>
+                {
+                    b.HasOne("ECommercePlatform.Server.Entities.Main.Category", "Category")
+                        .WithMany("ProductSections")
+                        .HasForeignKey("CategoryID");
+
+                    b.HasOne("ECommercePlatform.Server.Entities.Main.SubCategory", "SubCategory")
+                        .WithMany("ProductSections")
+                        .HasForeignKey("SubCategoryID");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("SubCategory");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.SectionProducts", b =>
+                {
+                    b.HasOne("ECommercePlatform.Server.Entities.Main.Product", "Product")
+                        .WithMany("SectionProducts")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommercePlatform.Server.Entities.HomeSections.ProductSection", "ProductSection")
+                        .WithMany("SectionProducts")
+                        .HasForeignKey("SectionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ProductSection");
+                });
+
             modelBuilder.Entity("ECommercePlatform.Server.Entities.Identity.ApplicationUser", b =>
                 {
                     b.OwnsMany("ECommercePlatform.Server.Entities.Identity.RefreshToken", "RefreshTokens", b1 =>
@@ -452,6 +738,25 @@ namespace ECommercePlatform.Server.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.Orders.ProductsOrders", b =>
+                {
+                    b.HasOne("ECommercePlatform.Server.Entities.Orders.Order", "Order")
+                        .WithMany("ProductsOrders")
+                        .HasForeignKey("OrderID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommercePlatform.Server.Entities.Main.Product", "Product")
+                        .WithMany("ProductsOrders")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -503,8 +808,20 @@ namespace ECommercePlatform.Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.HeroSection", b =>
+                {
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.HomeSections.ProductSection", b =>
+                {
+                    b.Navigation("SectionProducts");
+                });
+
             modelBuilder.Entity("ECommercePlatform.Server.Entities.Main.Category", b =>
                 {
+                    b.Navigation("ProductSections");
+
                     b.Navigation("Products");
 
                     b.Navigation("SubCategories");
@@ -513,6 +830,20 @@ namespace ECommercePlatform.Server.Migrations
             modelBuilder.Entity("ECommercePlatform.Server.Entities.Main.Product", b =>
                 {
                     b.Navigation("ProductImages");
+
+                    b.Navigation("ProductsOrders");
+
+                    b.Navigation("SectionProducts");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.Main.SubCategory", b =>
+                {
+                    b.Navigation("ProductSections");
+                });
+
+            modelBuilder.Entity("ECommercePlatform.Server.Entities.Orders.Order", b =>
+                {
+                    b.Navigation("ProductsOrders");
                 });
 #pragma warning restore 612, 618
         }

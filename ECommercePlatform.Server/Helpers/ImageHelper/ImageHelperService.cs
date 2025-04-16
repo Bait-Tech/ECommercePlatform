@@ -62,16 +62,13 @@
                 {
                     File.Delete(existingImagePath);
                 }
-                else
-                {
-                    throw new FileNotFoundException($"Image not found at path: {existingImagePath}");
-                }
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error deleting image: {ex.Message}", ex);
             }
         }
+
         private void EnsureDirectoriesExist()
         {
             var wwwrootPath = Path.Combine(_rootPath, "wwwroot");

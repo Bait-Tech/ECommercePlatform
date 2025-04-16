@@ -9,6 +9,11 @@ namespace ECommercePlatform.Server.Extensions.pagination
         PaginationParams paginationParams)
         {
             var totalCount = await source.CountAsync();
+
+            if(totalCount == 0)
+            {
+                return null;
+            }
             var items = await source
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)

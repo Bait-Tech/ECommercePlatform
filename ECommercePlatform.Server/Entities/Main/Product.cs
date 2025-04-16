@@ -1,4 +1,6 @@
 ﻿using ECommercePlatform.Server.Entities.Base;
+using ECommercePlatform.Server.Entities.HomeSections;
+using ECommercePlatform.Server.Entities.Orders;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommercePlatform.Server.Entities.Main
@@ -25,5 +27,9 @@ namespace ECommercePlatform.Server.Entities.Main
         public SubCategory? SubCategory { get; set; }
 
         public ICollection<ProductImage>? ProductImages { get; set; }
+
+        public ICollection<SectionProducts> SectionProducts { get; set; } = [];
+
+        public ICollection<ProductsOrders>? ProductsOrders { get; set; }
     }
 }

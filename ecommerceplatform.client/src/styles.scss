@@ -3,15 +3,17 @@
 @import "primeicons/primeicons.css";
 @import "primeflex/primeflex.css";
 
-@import "./app/src/assets/layout/styles/layout/variables";
-@import "./app/src/assets/layout/styles/layout/layout";
-@import "./app/src/assets/layout/styles/layout/responsive";
-@import "./app/src/assets/layout/styles/layout/menu";
-@import "./app/src/assets/layout/styles/layout/config";
-@import "./app/src/assets/layout/styles/layout/content";
-@import "./app/src/assets/layout/styles/layout/footer";
-@import "./app/src/assets/layout/styles/layout/utils";
-@import "./app/src/assets/layout/styles/layout/typography";
+@import 'assets/styles/layout-styles.scss';
+
+@import "assets/styles/variables";
+@import "assets/styles/layout";
+@import "assets/styles/responsive";
+@import "assets/styles/menu";
+@import "assets/styles/config";
+@import "assets/styles/content";
+@import "assets/styles/footer";
+@import "assets/styles/utils";
+@import "assets/styles/typography";
 
 * {
     box-sizing: border-box;
@@ -33,7 +35,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-
 .p-inputtext {
     width: 100%;
 }
@@ -44,9 +45,9 @@ a {
 }
 
 .layout-theme-light {
-    @import './app/src/assets/layout/styles/theme/theme_light';
+    @import 'assets/styles/theme_light';
 }
 
 .layout-theme-dark {
-    @import './app/src/assets/layout/styles/theme/theme_dark';
+    @import 'assets/styles/theme_dark';
 }

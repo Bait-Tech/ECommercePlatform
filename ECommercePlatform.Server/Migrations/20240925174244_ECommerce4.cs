@@ -18,7 +18,7 @@ namespace ECommercePlatform.Server.Migrations
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
-                name: "EnlgishName",
+                name: "EnglishName",
                 table: "SubCategories",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -31,7 +31,7 @@ namespace ECommercePlatform.Server.Migrations
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
-                name: "EnlgishName",
+                name: "EnglishName",
                 table: "Categories",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -45,7 +45,7 @@ namespace ECommercePlatform.Server.Migrations
                 table: "SubCategories");
 
             migrationBuilder.DropColumn(
-                name: "EnlgishName",
+                name: "EnglishName",
                 table: "SubCategories");
 
             migrationBuilder.DropColumn(
@@ -53,7 +53,7 @@ namespace ECommercePlatform.Server.Migrations
                 table: "Categories");
 
             migrationBuilder.DropColumn(
-                name: "EnlgishName",
+                name: "EnglishName",
                 table: "Categories");
         }
     }

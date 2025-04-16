@@ -25,10 +25,11 @@ namespace ECommercePlatform.Server.Services.Main.Category
                 {
                     ID = c.ID,
                     ImageUrl = c.ImageUrl,
-                    Name = c.EnlgishName
+                    Name = c.EnglishName
                 })
                 .ToListAsync();
         }
+
         public async Task<int> InsertAsync(CategoryDTO categoryDto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -37,7 +38,7 @@ namespace ECommercePlatform.Server.Services.Main.Category
             {
                 var category = new Entities.Main.Category
                 {
-                    EnlgishName = categoryDto.Name,
+                    EnglishName = categoryDto.Name,
                     ArabicName = categoryDto.Name
                 };
 
@@ -75,7 +76,7 @@ namespace ECommercePlatform.Server.Services.Main.Category
                     return false;
                 }
 
-                category.EnlgishName = categoryDto.Name;
+                category.EnglishName = categoryDto.Name;
 
                 if (categoryDto.ImageFile != null)
                 {
