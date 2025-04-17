@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { IProducts } from '../../../admin/interfaces/products.interface';
 import { ProductService } from '../../../admin/services/product.service';
 import { MessageService } from 'primeng/api';
+import { CartService } from '../../state-services/cart.service';
+import { ICartState } from '../../interfaces/cart-interface';
 
 @Component({
   selector: 'app-product-details',
@@ -21,7 +23,8 @@ export class ProductDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
@@ -130,9 +133,15 @@ export class ProductDetailsComponent implements OnInit {
       });
       return;
     }
-
-    console.log(`Adding ${this.quantity} of ${this.product.name} to cart`);
     
+    const cartItem: ICartState = {
+      productID: this.product.id, 
+      qty: this.quantity,
+      product: this.product 
+    };
+    
+    this.cartService.addToCart(cartItem);
+
     this.messageService.add({
       severity: 'success',
       summary: 'Success',

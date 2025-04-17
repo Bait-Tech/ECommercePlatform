@@ -14,11 +14,16 @@
             <h6 class="card-title text-center">{{ product.name }}</h6>
             <div class="d-flex justify-content-center align-items-center">
               <span class="text-muted text-decoration-line-through me-2">{{ product.price | currency }}</span>
-              <span class="fw-bold">{{ product.discountPrice != null ? (product.discountPrice | currency) :
-                (product.price | currency) }}</span>
+              <span class="fw-bold">
+                {{ product.discountPrice != null ? (product.discountPrice | currency) : (product.price | currency) }}
+              </span>
             </div>
             <div class="d-grid gap-2 mt-3">
-              <button class="btn btn-info text-white">Add To Cart</button>
+              <button
+                class="btn btn-info text-white"
+                (click)="addToCart(product); $event.stopPropagation()">
+                Add To Cart
+              </button>
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@
         public required string Location { get; set; }
         public required string PhoneNumber { get; set; }
         public bool IsConfirmed { get; set; }
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
         public DateTime? ConfirmDate { get; set; }
         public required List<ProductsOrderDTO> ProductsOrderDTO { get; set; }
     }

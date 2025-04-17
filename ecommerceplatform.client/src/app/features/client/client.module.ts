@@ -37,6 +37,9 @@ import { SubCategoriesComponent } from './components/sub-categories/sub-categori
 import { ProductsComponent } from './components/products/products.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { MessageService } from 'primeng/api';
+import { ShoppingCartComponent } from './components/shopping-cart/shopping-cart.component';
+import { MainImagePipe } from './pipes/main-image.pipe';
+import { OrderPopupComponent } from './components/shopping-cart/components/order-popup/order-popup.component';
 const routes: Routes = [
   {
     path: '',
@@ -50,6 +53,7 @@ const routes: Routes = [
       { path: 'products', component: ProductsComponent },
       { path: 'products/:id', component: ProductsComponent },
       { path: 'product-details/:id', component: ProductDetailsComponent },
+      { path: 'shopping-cart', component: ShoppingCartComponent },
     ],
   },
 ];
@@ -95,7 +99,10 @@ const routes: Routes = [
     CategoriesComponent,
     SubCategoriesComponent,
     ProductsComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    ShoppingCartComponent,
+    MainImagePipe,
+    OrderPopupComponent
   ],
   providers:[
     MessageService

@@ -3,6 +3,9 @@ import { IProductsSection } from '../../../../../admin/interfaces/products-secti
 import { ProductsSectionService } from '../../../../../admin/services/products-section.service';
 import { ISectionProducts } from '../../../../../admin/interfaces/section-products.interface';
 import { Router } from '@angular/router';
+import { IProducts } from '../../../../../admin/interfaces/products.interface';
+import { ICartState } from '../../../../interfaces/cart-interface';
+import { CartService } from '../../../../state-services/cart.service';
 
 @Component({
   selector: 'app-products-section',
@@ -15,7 +18,8 @@ export class ProductsSectionComponent implements OnInit {
 
   constructor(
     private productsSectionService: ProductsSectionService,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
@@ -58,5 +62,19 @@ export class ProductsSectionComponent implements OnInit {
     }
 
     this.router.navigate(['/product-details', id]);
+  }
+
+  addToCart(product: IProducts): void {
+    if (!product || product.stockQuantity === 0) {
+      return;
+    }
+
+    const cartItem: ICartState = {
+      productID: product.id,
+      qty: 1,
+      product: product,
+    };
+
+    this.cartService.addToCart(cartItem);
   }
 }

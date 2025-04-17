@@ -13,6 +13,10 @@ export class OrdersService {
 
   constructor(private http: HttpClient) {}
 
+  addOrder(items:IOrders):Observable<boolean>{
+   return this.http.post<boolean>(`${this.apiUrl}`,items);
+  }
+
   getOrders(
     filter: IFilterOrders
   ): Observable<{ items: IOrders[]; totalCount: number }> {
